@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#222B33"/>
+  <!-- V皮梯形臉 -->
+  <path d="M196,150 H316 a20,20 0 0 1 8,8 L332,344 a20,20 0 0 1 -20,20 H200 a20,20 0 0 1 -20,-20 L188,158 a20,20 0 0 1 8,-8 Z" fill="#3A4D5C" stroke="#5A7080" stroke-width="3"/>
+  <!-- LED -->
+  <circle cx="306" cy="178" r="7" fill="#E8A849"/>
+  <!-- 眉 -->
+  <line x1="208" y1="232" x2="240" y2="223" stroke="#A0B0BC" stroke-width="8" stroke-linecap="round"/>
+  <line x1="272" y1="223" x2="304" y2="232" stroke="#A0B0BC" stroke-width="8" stroke-linecap="round"/>
+  <!-- 琥珀菱形眼 -->
+  <polygon points="224,250 240,272 224,294 208,272" fill="#E8A849"/>
+  <polygon points="288,250 304,272 288,294 272,272" fill="#E8A849"/>
+  <!-- 鼻 -->
+  <path d="M256,286 L249,312 H263 Z" fill="none" stroke="#5A7080" stroke-width="3"/>
+  <!-- 嘴 -->
+  <line x1="236" y1="332" x2="276" y2="332" stroke="#A0B0BC" stroke-width="7" stroke-linecap="round"/>
+</svg>

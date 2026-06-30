@@ -1,0 +1,20 @@
+{
+  "name": "快收 · 給秘書",
+  "short_name": "快收",
+  "description": "一鍵把想法寄給你的 AI 秘書",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#222B33",
+  "theme_color": "#222B33",
+  "lang": "zh-Hant",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ],
+  "share_target": {
+    "action": "./index.html",
+    "method": "GET",
+    "params": { "title": "title", "text": "text", "url": "url" }
+  }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#222B33">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg">
+<title>快收 · 給秘書</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;background:#222B33;color:#A0B0BC;
+    font-family:ui-monospace,"Noto Sans TC",system-ui,sans-serif;}
+  .wrap{max-width:560px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;
+    padding:18px 16px calc(18px + env(safe-area-inset-bottom));gap:12px;}
+  header{display:flex;align-items:center;gap:10px;}
+  .eye{width:14px;height:14px;border-radius:50%;background:#E8A849;box-shadow:0 0 10px #E8A84988;}
+  h1{font-size:16px;letter-spacing:2px;margin:0;color:#cdd7de;font-weight:600;flex:1;}
+  .gear{background:none;border:none;color:#5A7080;font-size:22px;cursor:pointer;padding:4px 8px;}
+  .sub{font-size:12px;color:#5A7080;letter-spacing:1px;margin:2px 0 0 24px;}
+  textarea{flex:1;min-height:40vh;resize:none;border:1px solid #3a4d5c;border-radius:14px;
+    background:#1b242b;color:#e8eef2;font-size:17px;line-height:1.6;padding:14px;outline:none;}
+  textarea:focus{border-color:#E8A849;}
+  button.go{border:none;border-radius:14px;padding:16px;font-size:17px;font-weight:700;letter-spacing:3px;
+    background:#E8A849;color:#2A3640;cursor:pointer;}
+  button.go:active{transform:scale(.99);filter:brightness(.95);}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:#E8A849;color:#2A3640;font-weight:700;padding:10px 20px;border-radius:20px;
+    transition:.25s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  /* 設定面板 */
+  .panel{position:fixed;inset:0;background:#222B33ee;backdrop-filter:blur(4px);display:none;
+    flex-direction:column;justify-content:center;gap:14px;padding:28px;z-index:9;}
+  .panel.show{display:flex;}
+  .panel label{font-size:13px;color:#8aa0ad;letter-spacing:1px;}
+  .panel input{width:100%;border:1px solid #3a4d5c;border-radius:10px;background:#1b242b;
+    color:#e8eef2;font-size:16px;padding:12px;outline:none;margin-top:4px;}
+  .panel input:focus{border-color:#E8A849;}
+  .panel .row{display:flex;gap:10px;margin-top:8px;}
+  .panel .row button{flex:1;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;}
+  .save{background:#E8A849;color:#2A3640;}
+  .cancel{background:#3a4d5c;color:#cdd7de;}
+  .hint{font-size:11px;color:#5A7080;line-height:1.5;}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header><span class="eye"></span><h1>快收 · 給秘書</h1>
+      <button class="gear" id="gear" aria-label="設定">⚙︎</button></header>
+    <p class="sub" id="who"></p>
+    <textarea id="t" placeholder="想到什麼，丟進來就走…" autofocus></textarea>
+    <button class="go" id="go">送　出</button>
+  </div>
+
+  <div class="panel" id="panel">
+    <div><label>收件人 Email（要傳給誰）</label>
+      <input id="in-to" type="email" placeholder="someone@gmail.com"></div>
+    <div><label>主旨（給秘書搜尋的記號）</label>
+      <input id="in-sub" type="text" placeholder="快收"></div>
+    <p class="hint">小撇步：用 Gmail 別名（你的信箱+claude@gmail.com）+ 固定主旨，秘書最好搜。設定存在這支手機本地。</p>
+    <div class="row"><button class="cancel" id="cancel">取消</button><button class="save" id="save">儲存</button></div>
+  </div>
+
+  <div class="toast" id="toast">✅ 已送出給秘書</div>
+<script>
+  const $=id=>document.getElementById(id);
+  const DEF_TO="rc859100+claude@gmail.com", DEF_SUB="快收";
+  function getTo(){return localStorage.getItem("ks_to")||DEF_TO;}
+  function getSub(){return localStorage.getItem("ks_sub")||DEF_SUB;}
+  function refresh(){$("who").textContent="→ "+getTo()+"（主旨："+getSub()+"）";}
+  refresh();
+  // 接收從其他 App「分享」進來的內容（Web Share Target）
+  (function(){const p=new URLSearchParams(location.search);
+    const s=[p.get("title"),p.get("text"),p.get("url")].filter(Boolean).join("\n");
+    if(s){$("t").value=s;$("t").focus();}})();
+  // 送出
+  $("go").onclick=function(){
+    const v=$("t").value.trim(); if(!v) return;
+    window.location.href="mailto:"+getTo()+"?subject="+encodeURIComponent(getSub())+"&body="+encodeURIComponent(v);
+    $("toast").classList.add("show"); setTimeout(()=>$("toast").classList.remove("show"),1800);
+    setTimeout(()=>{$("t").value="";},600);
+  };
+  // 設定
+  $("gear").onclick=()=>{$("in-to").value=getTo();$("in-sub").value=getSub();$("panel").classList.add("show");};
+  $("cancel").onclick=()=>$("panel").classList.remove("show");
+  $("save").onclick=function(){
+    localStorage.setItem("ks_to",$("in-to").value.trim()||DEF_TO);
+    localStorage.setItem("ks_sub",$("in-sub").value.trim()||DEF_SUB);
+    refresh(); $("panel").classList.remove("show");
+  };
+  // PWA 可安裝
+  if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{});}
+</script>
+</body>
+</html>
